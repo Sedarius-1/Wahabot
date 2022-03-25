@@ -31,12 +31,21 @@ async def options(ctx, arg=None):
 
 
 @bot.command(pass_context=True)
-async def addpoints(ctx, arg=None):
+async def addpoint(ctx, arg=None):
     if arg == None:
         scripts.adding_points(ctx.author.name)
-        return
-    scripts.adding_points(arg)
+    else:
+        scripts.adding_points(arg)
+    await ctx.channel.send("Point added! Great job!")
 
+
+@bot.command(pass_context=True)
+async def getpoints(ctx, arg=None):
+    if arg == None:
+        message=scripts.get_points(ctx.author.name)
+    else:
+        message=scripts.get_points(arg)
+    await ctx.channel.send(message)
 
 with open('token.secret') as f1:
     dsc_token = f1.readline()

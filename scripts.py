@@ -47,7 +47,6 @@ def parse_multiple_into_one(amount, li):
 
 
 def adding_points(p):
-    #pass
     path = "points.xlsx"
     wb_obj = openpyxl.load_workbook(path)
     sheet_obj = wb_obj.active
@@ -63,4 +62,17 @@ def adding_points(p):
                 print(type(c1))
             break
     wb_obj.save(path)
+def get_points(p):
+    path = "points.xlsx"
+    wb_obj = openpyxl.load_workbook(path)
+    sheet_obj = wb_obj.active
+    for row in sheet_obj.rows:
+        for cell in row:
+            if cell.value == p:
+                cell1 = sheet_obj.cell(row=cell.row, column=3)
+                c1 = cell1.value
+                message="Amount of points for "+p+" is: "+str(c1)
+            break
+    wb_obj.save(path)
+    return message
 
