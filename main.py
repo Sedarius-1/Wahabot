@@ -1,42 +1,48 @@
 import random
 
 import discord
+from discord.ext import commands
 import scripts
-client = discord.Client()
+bot = commands.Bot(command_prefix='.',
+                   case_insensitive=True,
+                   description="UWU",
+                   strip_after_prefix=True,  # allow "$com" == "$ com"
+                   )
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print(f'{client.user} has connected to Discord!')
+    print(f'{bot.user} has connected to Discord!')
+
+@bot.command(pass_context=True)
+async def idea(ctx, arg=None):
+    message = scripts.construct_message(ctx.author.name)
+    await ctx.channel.send(message)
+
+@bot.command(pass_context=True)
+async def options(ctx, arg=None):
+    if arg == None:
+        li = scripts.get_list("czynnosci")
+    else:
+        li = scripts.get_list(arg)
+    amount = len(li)
+    message = scripts.parse_multiple_into_one(amount, li)
+    await ctx.channel.send(message)
 
 
-@client.event
-async def on_message(Message):
-    if Message.author == client.user:
+@bot.command(pass_context=True)
+async def addpoints(ctx, arg=None):
+    if arg == None:
+        scripts.adding_points(ctx.author.name)
         return
-    if ".idea" in Message.content.lower():
-            message=scripts.construct_message(Message.author.name)
-            await Message.channel.send(message)
-        # file = discord.File(r"nocom.gif")
-        # await Message.channel.send(file=file, content="Sus")
-    if ".options" in Message.content.lower():
+    scripts.adding_points(arg)
 
-        wiad=Message.content.split(" ")
-        if len(wiad) == 1:
-            li = scripts.get_list("czynnosci")
-        else:
-            li=scripts.get_list(wiad[1])
-        amount = len(li)
-        message=scripts.parse_multiple_into_one(amount, li)
-        await Message.channel.send(message)
-    if ".addpoints" in Message.content.lower():
-        scripts.adding_points(Message.author.name)
 
 with open('token.secret') as f1:
     dsc_token = f1.readline()
 f1.close()
 
-client.run(dsc_token)
+bot.run(dsc_token)
 
 # TODO:
 # -tak/nie                          $decide
