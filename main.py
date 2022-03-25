@@ -72,16 +72,16 @@ async def getpoints(ctx, arg=None):
             i=i.replace("'", "")
         print(users)
         for i in users:
-            print(i)
-            print(arg)
+            #print(i)
+            #print(arg)
             if i == arg:
                 message = scripts.get_points(arg)
-                print("ok")
+                #print("ok")
                 print(message)
                 await ctx.channel.send(message)
                 return
             else:
-                print(":<")
+                #print(":<")
                 message = "Na serwerze nie znalazłem takiego użytkownika!"
     print(message)
     await ctx.channel.send(message)

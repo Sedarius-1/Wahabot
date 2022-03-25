@@ -105,16 +105,18 @@ def get_points(p):
 
     for row in sheet_obj.rows:
         for cell in row:
-            if cell.value == p:
+            print(cell.value)
+            if p == cell.value:
                 cell1 = sheet_obj.cell(row=cell.row, column=3)
                 c1 = cell1.value
+                #print(c1)
                 message = "Amount of points for " + p + " is: " + str(c1)
                 wb_obj.save(path)
                 return message
-            else:
-                message = "Ten użytkownik nie ma jeszcze zliczanych punktów!"
-                wb_obj.save(path)
-                return message
+
+    message = "Ten użytkownik nie ma jeszcze zliczanych punktów!"
+    wb_obj.save(path)
+    return message
 
 
 
