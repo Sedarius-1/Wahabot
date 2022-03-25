@@ -3,16 +3,28 @@ import random
 import discord
 from discord.ext import commands
 import scripts
+
+intents = discord.Intents.default()
+intents.members= True
+
 bot = commands.Bot(command_prefix='.',
                    case_insensitive=True,
                    description="UWU",
                    strip_after_prefix=True,  # allow "$com" == "$ com"
+                   intents=intents
                    )
 
-
+users=[]
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+
+
+@bot.command(pass_context=True)
+async def commands(ctx, arg=None):
+    message=scripts.commandlist()
+    await ctx.channel.send(message)
+
 
 @bot.command(pass_context=True)
 async def idea(ctx, arg=None):
@@ -31,6 +43,14 @@ async def options(ctx, arg=None):
 
 
 @bot.command(pass_context=True)
+async def newpointcounter(ctx, arg=None):
+    if arg == None:
+        message=scripts.new_user_points(ctx.author.name)
+    else:
+        message=scripts.new_user_points(arg)
+    await ctx.channel.send(message)
+
+@bot.command(pass_context=True)
 async def addpoint(ctx, arg=None):
     if arg == None:
         scripts.adding_points(ctx.author.name)
@@ -44,7 +64,26 @@ async def getpoints(ctx, arg=None):
     if arg == None:
         message=scripts.get_points(ctx.author.name)
     else:
-        message=scripts.get_points(arg)
+        guild = ctx.guild
+        for i in guild.members:
+            users.append(i.name)
+        message=" dummy "
+        for i in users:
+            i=i.replace("'", "")
+        print(users)
+        for i in users:
+            print(i)
+            print(arg)
+            if i == arg:
+                message = scripts.get_points(arg)
+                print("ok")
+                print(message)
+                await ctx.channel.send(message)
+                return
+            else:
+                print(":<")
+                message = "Na serwerze nie znalazłem takiego użytkownika!"
+    print(message)
     await ctx.channel.send(message)
 
 with open('token.secret') as f1:
