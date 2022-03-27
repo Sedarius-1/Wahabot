@@ -44,6 +44,9 @@ def check_user_database(p):
 
 
 def checklist(dire, p):
+    print(type(p))
+    if p == None:
+        p = 'main'
     print("data/"+dire+'/'+p+'.txt')
     isExist = os.path.exists("data/"+dire+'/'+p+'.txt')
     if not isExist:
@@ -146,15 +149,14 @@ def add_to_list(name, addon):
     with open(name + '.txt') as f1:
         lines1 = f1.readlines()
     f1.close()
-    for i in lines1:
-        if i == "p":
-            with open(name + '.txt', 'w') as f1:
-                f1.write(addon+'\n')
-            f1.close()
-        else:
-            with open(name + '.txt', 'a') as f1:
-                f1.write(addon+'\n')
-            f1.close()
+    if lines1[0] == "p":
+        with open(name + '.txt', 'w') as f1:
+            f1.write(addon+'\n')
+        f1.close()
+    else:
+        with open(name + '.txt', 'a') as f1:
+            f1.write(addon+'\n')
+        f1.close()
 
 
 def new_user_points(p):
