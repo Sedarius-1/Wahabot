@@ -1,6 +1,7 @@
 import random
 import discord
 import openpyxl
+import os
 
 client = discord.Client()
 
@@ -19,30 +20,109 @@ def commandlist():
     wb_obj.save(path)
     return message
 
+def make_user_database(p):
+    path = (str(p)[:5])
+    print(path)
+    isExist = os.path.exists("data/"+path)
+    print(isExist)
+    if isExist:
+        message = "Masz już swoją bazę, nie mogę utworzyć drugiej!"
+    if not isExist:
+        os.makedirs("data/"+path)
+        message = "Utworzyłem dla Ciebie własną bazę - możesz tworzyć już swoje listy!"
+    return message
 
-def activchoice(p):
-    with open(p + '.txt') as f1:
+
+def check_user_database(p):
+    path = (str(p)[:5])
+    isExist = os.path.exists("data/" + path)
+    if not isExist:
+        message = "Nie widzę Twojej bazy - przed działaniem musisz ją utworzyć komendą .makebase"
+        return message
+    if isExist:
+        return path
+
+
+def checklist(dire, p):
+    print("data/"+dire+'/'+p+'.txt')
+    isExist = os.path.exists("data/"+dire+'/'+p+'.txt')
+    if not isExist:
+        message = "Nie ma takiej listy - musisz ją utworzyć komendą .makelist"
+        code = 1
+    if isExist:
+        message = "Widzę taką listę - zabieram się do działania!"
+        code = 0
+    return [message, code]
+
+
+def idea_checklist(path):
+    p1='data/'+path+'/main.txt'
+    print(p1)
+    isExist1 = os.path.exists('data/'+path+'/main.txt')
+    if not isExist1:
+        message = "Nie ma pliku nazwanego main - nie mogę losować! :("
+        code = 1
+        return [message, code]
+    for filename in os.listdir("data/"+path+"/"):
+        if filename != 'main.txt':
+            message = "Pliki na miejscu - zabieram się do losowania! :)"
+            code = 0
+            return [message, code]
+    message = "Nie ma pliku nienazwanego main - nie mogę losować! :("
+    code = 1
+    return [message, code]
+
+
+def add_list(dire, p):
+    a=checklist(dire,p)[1]
+    if a == 0:
+        message = "Taka lista już istnieje - nadpisz ją używając odpowiedniej komendy!"
+        return message
+    else:
+        with open("data/"+dire+"/"+p+'.txt', 'a') as f1:
+            f1.write('')
+        f1.close()
+        message = "Nie znalazłem takiej listy więc już ją tworzę!"
+        with open("data/"+dire+"/main.txt", 'a') as f2:
+            f2.write('\n'+p)
+        f2.close()
+        return message
+
+
+def activchoice(p, dire):
+    with open("data/"+dire+'/'+p + '.txt') as f1:
         lines1 = f1.readlines()
     f1.close()
-    n: int = random.randint(0, len(lines1) - 1)
+    z=len(lines1) - 1
+    if(z)<0:
+        z=0
+    n: int = random.randint(0, z)
+    print("index:"+str(n))
+    print("wylosowane:"+str(lines1[n]))
     nazwa = lines1[n].strip()
     linie = n
-    print(nazwa, '\n', linie)
+    #print(nazwa, '\n', linie)
     return [nazwa, linie]
     # return lines1[n].strip(), n
 
 
-def emptycheck():
-    p = 0
-    while p == 0:
-        l1 = activchoice("czynnosci")
-        l2 = activchoice(l1[0])
-        p = l2[1]
-    return [l1, l2]
+def emptycheck(dire):
+    l1 = activchoice("main", dire)
+    l2 = activchoice(l1[0], dire)
+    print("l2[0]:"+l2[0])
+    if l2[0] == 'p':
+        code = 1
+    else:
+        code = 0
+    print(code)
+    return [l1, l2, code]
 
 
-def construct_message(name):
-    lista = emptycheck()
+def construct_message(name, dire):
+
+    lista = emptycheck(dire)
+    while lista[2] != 0:
+        lista = emptycheck(dire)
     p = "Plan na dziś dla " + name + " - "
     constructed_message = p + lista[0][0] + ": " + lista[1][0]
     return constructed_message
@@ -60,6 +140,22 @@ def parse_multiple_into_one(amount, li):
     for i in range(amount):
         onemes += (str(i + 1) + ". " + li[i])
     return onemes
+
+
+def add_to_list(name, addon):
+    with open(name + '.txt') as f1:
+        lines1 = f1.readlines()
+    f1.close()
+    for i in lines1:
+        if i == "p":
+            with open(name + '.txt', 'w') as f1:
+                f1.write(addon+'\n')
+            f1.close()
+        else:
+            with open(name + '.txt', 'a') as f1:
+                f1.write(addon+'\n')
+            f1.close()
+
 
 def new_user_points(p):
     path = "points.xlsx"
@@ -117,6 +213,7 @@ def get_points(p):
     message = "Ten użytkownik nie ma jeszcze zliczanych punktów!"
     wb_obj.save(path)
     return message
+
 
 
 

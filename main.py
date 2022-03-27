@@ -3,6 +3,7 @@ import random
 import discord
 from discord.ext import commands
 import scripts
+import os
 
 intents = discord.Intents.default()
 intents.members= True
@@ -28,18 +29,63 @@ async def commands(ctx, arg=None):
 
 @bot.command(pass_context=True)
 async def idea(ctx, arg=None):
-    message = scripts.construct_message(ctx.author.name)
-    await ctx.channel.send(message)
+    dire = scripts.check_user_database(ctx.author.id)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        check=scripts.idea_checklist(dire)
+        await ctx.channel.send(check[0])
+        if check[1] == 0:
+            message = scripts.construct_message(ctx.author.name, dire)
+            await ctx.channel.send(message)
+
 
 @bot.command(pass_context=True)
 async def options(ctx, arg=None):
-    if arg == None:
-        li = scripts.get_list("czynnosci")
+    dire=scripts.check_user_database(ctx.author.id)
+    check = scripts.checklist(dire, arg)
+    if check[1] != 0:
+        message = check[0]
+        await ctx.channel.send(message)
     else:
-        li = scripts.get_list(arg)
-    amount = len(li)
-    message = scripts.parse_multiple_into_one(amount, li)
+        message = check[0]
+        await ctx.channel.send(message)
+        if arg == None:
+            li = scripts.get_list("data/"+dire+"/main")
+        else:
+            li = scripts.get_list("data/"+dire+"/"+arg)
+        amount = len(li)
+        message = scripts.parse_multiple_into_one(amount, li)
+        await ctx.channel.send(message)
+
+
+@bot.command(pass_context=True)
+async def addlist(ctx, arg=None):
+    dire = scripts.check_user_database(ctx.author.id)
+    message = scripts.add_list(dire, arg)
     await ctx.channel.send(message)
+
+
+@bot.command(pass_context=True)
+async def addentries(ctx, arg1 = None, arg2 = None, arg3 = None):
+    dire = scripts.check_user_database(ctx.author.id)
+    if arg1 == None:
+        await ctx.channel.send("Nie podano mi listy!")
+        return
+    if arg2 == None:
+        await ctx.channel.send("Nie podano mi ile razy dodać wpis!")
+        return
+    if arg3 == None:
+        await ctx.channel.send("Nie podano mi co wpisać!")
+        return
+    path = "data/" + dire + "/" + arg1+".txt"
+    print(path)
+    if not os.path.exists(path):
+        await ctx.channel.send("Nie ma takiej listy!")
+        return
+    for i in range(int(arg2)):
+        scripts.add_to_list("data/" + dire + "/" + arg1, arg3)
+    await ctx.channel.send("Zaktualizowano listę: "+arg1+"!")
 
 
 @bot.command(pass_context=True)
@@ -85,6 +131,10 @@ async def getpoints(ctx, arg=None):
                 message = "Na serwerze nie znalazłem takiego użytkownika!"
     print(message)
     await ctx.channel.send(message)
+@bot.command(pass_context=True)
+async def makebase(ctx, arg=None):
+    message=scripts.make_user_database(ctx.author.id)
+    await ctx.channel.send(message)
 
 with open('token.secret') as f1:
     dsc_token = f1.readline()
@@ -92,9 +142,3 @@ f1.close()
 
 bot.run(dsc_token)
 
-# TODO:
-# -tak/nie                          $decide
-# -wysyłanie sprawozdań             $givspraw <nr_zadania>
-# -wtrącanie się do rozmów o nim    "smoli"
-# -włamy na głosowy  earrape        "SMOLINUS"
-# -cleverbot?                       $converse
