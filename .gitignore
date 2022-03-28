@@ -4,4 +4,4 @@ venv/
 *.secret
 *.log
 data/*
-points.xlsx
+*.xlsx
