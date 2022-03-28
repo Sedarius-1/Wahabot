@@ -48,7 +48,7 @@ def add_list(dire, p):
         if p is None:
             p = "main"
         with open("data/"+dire+"/"+p+'.txt', 'a') as f1:
-            f1.write('')
+            f1.write('p')
         f1.close()
         message = "Nie znalazłem takiej listy więc już ją tworzę!"
         with open("data/"+dire+"/main.txt", 'a') as f2:
@@ -70,7 +70,10 @@ def get_list(name):
 def parse_multiple_into_one(amount, li):
     onemes = "List:\n"
     for i in range(amount):
-        onemes += (str(i + 1) + ". " + li[i])
+        if i > 9:
+            onemes += (str(i + 1) + ". " + li[i])
+        else:
+            onemes += (str(i + 1) + ".  " + li[i])
     return onemes
 
 
