@@ -4,3 +4,4 @@ venv/
 *.secret
 *.log
 data/*
+*.xlsx

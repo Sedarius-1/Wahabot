@@ -3,7 +3,7 @@ import openpyxl
 
 
 def commandlist():
-    path = "commands.xlsx"
+    path = "data/commands.xlsx"
     wb_obj = openpyxl.load_workbook(path)
     sheet_obj = wb_obj.active
     message = "Lista moich komend:\n"
@@ -17,7 +17,7 @@ def commandlist():
 
 
 def new_user_points(p):
-    path = "points.xlsx"
+    path = "data/points.xlsx"
     wb_obj = openpyxl.load_workbook(path)
     sheet_obj = wb_obj.active
     for row in sheet_obj.rows:
@@ -36,7 +36,7 @@ def new_user_points(p):
 
 
 def adding_points(p):
-    path = "points.xlsx"
+    path = "data/points.xlsx"
     wb_obj = openpyxl.load_workbook(path)
     sheet_obj = wb_obj.active
     for row in sheet_obj.rows:
@@ -54,7 +54,7 @@ def adding_points(p):
 
 
 def get_points(p):
-    path = "points.xlsx"
+    path = "data/points.xlsx"
     wb_obj = openpyxl.load_workbook(path)
     sheet_obj = wb_obj.active
 
