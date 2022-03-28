@@ -87,7 +87,7 @@ def add_list(dire, p):
         f1.close()
         message = "Nie znalazłem takiej listy więc już ją tworzę!"
         with open("data/"+dire+"/main.txt", 'a') as f2:
-            f2.write('\n'+p)
+            f2.write(p+'\n')
         f2.close()
         return message
 
