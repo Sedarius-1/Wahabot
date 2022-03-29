@@ -78,6 +78,13 @@ async def add_list(ctx, arg=None):
 
 
 @bot.command(pass_context=True)
+async def remove_list(ctx, arg=None):
+    dire = fad.check_user_database(ctx.author.id)
+    message = fad.remove_list(dire, arg)
+    await ctx.channel.send(message)
+
+
+@bot.command(pass_context=True)
 async def add_ent(ctx, arg1=None, arg2=None, arg3=None):
     dire = fad.check_user_database(ctx.author.id)
     if arg1 is None:

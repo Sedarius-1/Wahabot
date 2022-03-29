@@ -60,6 +60,19 @@ def add_list(dire, p):
         return message
 
 
+def remove_list(dire, p):
+    if p is None:
+        message = "Nie podano mi którą listę usunąć!"
+        return message
+    a = checklist(dire, p)[1]
+    if a == 0:
+        os.remove("data/"+dire+"/"+p+'.txt')
+        message = "Usunąłem listę "+p+"!"
+    else:
+        message = "Nie ma takiej listy!"
+    return message
+
+
 def get_list(name):
     with open(name + '.txt') as f1:
         lines1 = f1.readlines()
