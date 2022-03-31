@@ -18,7 +18,7 @@ def check_user_database(p):
     path = (str(p)[:5])
     is_exist = os.path.exists("data/" + path)
     if not is_exist:
-        message = "Nie widzę Twojej bazy - przed działaniem musisz ją utworzyć komendą .makebase"
+        message = "Nie widzę Twojej bazy - przed działaniem musisz ją utworzyć komendą .make_base"
         return message
     if is_exist:
         return path
@@ -29,7 +29,7 @@ def checklist(dire, p):
         p = 'main'
     is_exist = os.path.exists("data/"+dire+'/'+p+'.txt')
     if not is_exist:
-        message = "Nie ma takiej listy - musisz ją utworzyć komendą .makelist"
+        message = "Nie ma takiej listy - musisz ją utworzyć komendą .add_list"
         code = 1
     if is_exist:
         message = "Widzę taką listę - zabieram się do działania!"

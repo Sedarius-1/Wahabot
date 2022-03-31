@@ -5,3 +5,6 @@ Patchnotes for alpha 0.0.2
 3. Fixed removing from list (now displays a proper message)
 4. Fixed creating database (main.txt now is generated properly)
 5. Removed unnecessary args in some commands
+
+Fix #1
+1. check_user_database and checklist now display proper commands in error messages
