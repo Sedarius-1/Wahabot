@@ -27,6 +27,10 @@ def check_user_database(p):
 def checklist(dire, p):
     if p is None:
         p = 'main'
+    if not p.isalnum():
+        message = "Nie ma takiej listy - podano znaki niealfanumeryczne!"
+        code = 2
+    p = p.lower()
     is_exist = os.path.exists("data/"+dire+'/'+p+'.txt')
     if not is_exist:
         message = "Nie ma takiej listy - musisz ją utworzyć komendą .add_list"
@@ -39,6 +43,9 @@ def checklist(dire, p):
 
 def add_list(dire, p):
     a = checklist(dire, p)[1]
+    if a == 2:
+        message = checklist(dire, p)[0]
+        return message
     if a == 0:
         message = "Taka lista już istnieje - nadpisz ją używając odpowiedniej komendy!"
         return message
@@ -78,6 +85,9 @@ def copy_list(dire, p, c):
         return message
     a = checklist(dire, p)[1]
     z = checklist(dire, c)[1]
+    if a == 2 or z == 2:
+        message = checklist(dire, p)[0]
+        return message
     if z == 0:
         message = "Lista podana jako nowa nazwa już istnieje jako lista!"
         return message
@@ -101,6 +111,9 @@ def remove_list(dire, p):
         message = "Nie podano mi którą listę usunąć!"
         return message
     a = checklist(dire, p)[1]
+    if a == 2:
+        message = checklist(dire, p)[0]
+        return message
     if a == 0:
         os.remove("data/"+dire+"/"+p+'.txt')
         message = "Usunąłem listę "+p+"!"
@@ -127,6 +140,7 @@ def parse_multiple_into_one(amount, li):
 
 
 def add_to_list(name, addon):
+    name = name.lower()
     with open(name + '.txt') as f1:
         lines1 = f1.readlines()
     f1.close()
@@ -141,6 +155,7 @@ def add_to_list(name, addon):
 
 
 def remove_from_list(name, line):
+    name = name.lower()
     with open(name + '.txt') as f1:
         lines1 = f1.readlines()
         print(len(lines1))

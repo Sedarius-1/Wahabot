@@ -8,3 +8,6 @@ Patchnotes for alpha 0.0.2
 
 Fix #1
 1. check_user_database and checklist now display proper commands in error messages
+
+Fix #2
+1. Forced lowercase(user might input uppercase, but they will be converted anyway) and alphanumeric symbols-only in paths (creating, copying and removing lists)

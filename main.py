@@ -145,6 +145,7 @@ async def rem_ent(ctx, arg1=None, arg2=None):
     message = fad.remove_from_list("data/" + dire + "/" + arg1, arg2)
     await ctx.channel.send(message)
 
+
 @bot.command(pass_context=True, brief="Rozpoczyna zliczanie punktów dla danego użytkownika",
              description="Dodaje do bazy danych wpis o zliczaniu punktów dla użytkownika"
                          "\nargumenty: nazwa użytkownika, domyślnie autor wiadomości")
