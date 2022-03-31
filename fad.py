@@ -119,6 +119,14 @@ def remove_list(dire, p):
     if a == 0:
         os.remove("data/"+dire+"/"+p+'.txt')
         message = "Usunąłem listę "+p+"!"
+        with open("data/" + dire + "/main.txt", 'r') as f1:
+            lines1 = f1.readlines()
+        f1.close()
+        with open("data/" + dire + "/main.txt", 'w') as f2:
+            for index, title in enumerate(lines1, start=1):
+                if title != p+"\n":
+                    f2.write(title)
+        f2.close()
     else:
         message = "Nie ma takiej listy!"
     return message

@@ -11,3 +11,6 @@ Fix #1
 
 Fix #2
 1. Forced lowercase(user might input uppercase, but they will be converted anyway) and alphanumeric symbols-only in paths (creating, copying and removing lists)
+
+Fix #3
+1. Remove_list now also removes proper entry from main.txt
