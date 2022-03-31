@@ -27,15 +27,17 @@ def check_user_database(p):
 def checklist(dire, p):
     if p is None:
         p = 'main'
-    if not p.isalnum():
+    print(p.isalnum())
+    if p.isalnum() is False:
         message = "Nie ma takiej listy - podano znaki niealfanumeryczne!"
         code = 2
+        return [message, code]
     p = p.lower()
     is_exist = os.path.exists("data/"+dire+'/'+p+'.txt')
     if not is_exist:
         message = "Nie ma takiej listy - musisz ją utworzyć komendą .add_list"
         code = 1
-    if is_exist:
+    else:
         message = "Widzę taką listę - zabieram się do działania!"
         code = 0
     return [message, code]
@@ -144,7 +146,7 @@ def add_to_list(name, addon):
     with open(name + '.txt') as f1:
         lines1 = f1.readlines()
     f1.close()
-    if lines1[0] == "p":
+    if lines1[0] == "p\n":
         with open(name + '.txt', 'w') as f1:
             f1.write(addon+'\n')
         f1.close()
