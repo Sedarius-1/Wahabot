@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 import fad
@@ -21,6 +20,7 @@ users = []
 
 @bot.event
 async def on_ready():
+    calc.track_points()
     print(f'{bot.user} has connected to Discord!')
 
 
@@ -35,7 +35,7 @@ async def commands(ctx):
 async def make_base(ctx):
     message = fad.make_user_database(ctx.author.id)
     dire = fad.check_user_database(ctx.author.id)
-    fad.add_list(dire, "main")
+    fad.add_list(dire[0], "main")
     await ctx.channel.send(message)
 
 
@@ -60,20 +60,23 @@ async def idea(ctx):
                          "\nargumenty: nazwa listy, domyślnie main")
 async def show_list(ctx, arg=None):
     dire = fad.check_user_database(ctx.author.id)
-    check = fad.checklist(dire, arg)
-    if check[1] != 0:
-        message = check[0]
-        await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
     else:
-        message = check[0]
-        await ctx.channel.send(message)
-        if arg is None:
-            li = fad.get_list("data/"+dire+"/main")
+        check = fad.checklist(dire, arg)
+        if check[1] != 0:
+            message = check[0]
+            await ctx.channel.send(message)
         else:
-            li = fad.get_list("data/"+dire+"/"+arg)
-        amount = len(li)
-        message = fad.parse_multiple_into_one(amount, li)
-        await ctx.channel.send(message)
+            message = check[0]
+            await ctx.channel.send(message)
+            if arg is None:
+                li = fad.get_list("data/" + dire + "/main")
+            else:
+                li = fad.get_list("data/" + dire + "/" + arg)
+            amount = len(li)
+            message = fad.parse_multiple_into_one(amount, li)
+            await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Dodaje nową listę",
@@ -81,8 +84,11 @@ async def show_list(ctx, arg=None):
                          "\nargumenty: nazwa listy, domyślnie main")
 async def add_list(ctx, arg=None):
     dire = fad.check_user_database(ctx.author.id)
-    message = fad.add_list(dire, arg)
-    await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        message = fad.add_list(dire, arg)
+        await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Kopiuje listę",
@@ -90,8 +96,11 @@ async def add_list(ctx, arg=None):
                          "\nargumenty: 1.nazwa listy, 2.nazwa kopii")
 async def copy_list(ctx, arg1=None, arg2=None):
     dire = fad.check_user_database(ctx.author.id)
-    message = fad.copy_list(dire, arg1, arg2)
-    await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        message = fad.copy_list(dire, arg1, arg2)
+        await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Usuwa listę",
@@ -99,8 +108,11 @@ async def copy_list(ctx, arg1=None, arg2=None):
                          "\nargumenty: nazwa listy")
 async def remove_list(ctx, arg=None):
     dire = fad.check_user_database(ctx.author.id)
-    message = fad.remove_list(dire, arg)
-    await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        message = fad.remove_list(dire, arg)
+        await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Dodaje kilkukrotnie wpis do listy",
@@ -108,23 +120,26 @@ async def remove_list(ctx, arg=None):
                          "\nargumenty: nazwa listy, ilosć powtórzeń, wpis(koniecznie w "" jeśli ma więcej niż jeden wyraz")
 async def add_ent(ctx, arg1=None, arg2=None, arg3=None):
     dire = fad.check_user_database(ctx.author.id)
-    if arg1 is None:
-        await ctx.channel.send("Nie podano mi listy!")
-        return
-    if arg2 is None:
-        await ctx.channel.send("Nie podano mi ile razy dodać wpis!")
-        return
-    if arg3 is None:
-        await ctx.channel.send("Nie podano mi co wpisać!")
-        return
-    path = "data/" + dire + "/" + arg1+".txt"
-    print(path)
-    if not os.path.exists(path):
-        await ctx.channel.send("Nie ma takiej listy!")
-        return
-    for i in range(int(arg2)):
-        fad.add_to_list("data/" + dire + "/" + arg1, arg3)
-    await ctx.channel.send("Zaktualizowano listę: "+arg1+"!")
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        if arg1 is None:
+            await ctx.channel.send("Nie podano mi listy!")
+            return
+        if arg2 is None:
+            await ctx.channel.send("Nie podano mi ile razy dodać wpis!")
+            return
+        if arg3 is None:
+            await ctx.channel.send("Nie podano mi co wpisać!")
+            return
+        path = "data/" + dire + "/" + arg1 + ".txt"
+        print(path)
+        if not os.path.exists(path):
+            await ctx.channel.send("Nie ma takiej listy!")
+            return
+        for i in range(int(arg2)):
+            fad.add_to_list("data/" + dire + "/" + arg1, arg3)
+        await ctx.channel.send("Zaktualizowano listę: " + arg1 + "!")
 
 
 @bot.command(pass_context=True, brief="Usuwa wpis z listy",
@@ -132,18 +147,21 @@ async def add_ent(ctx, arg1=None, arg2=None, arg3=None):
                          "\nargumenty: nazwa listy, numer linii")
 async def rem_ent(ctx, arg1=None, arg2=None):
     dire = fad.check_user_database(ctx.author.id)
-    if arg1 is None:
-        await ctx.channel.send("Nie podano mi listy!")
-        return
-    if arg2 is None:
-        await ctx.channel.send("Nie podano mi którą linię usunąć!")
-        return
-    path = "data/" + dire + "/" + arg1 + ".txt"
-    if not os.path.exists(path):
-        await ctx.channel.send("Nie ma takiej listy!")
-        return
-    message = fad.remove_from_list("data/" + dire + "/" + arg1, arg2)
-    await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        if arg1 is None:
+            await ctx.channel.send("Nie podano mi listy!")
+            return
+        if arg2 is None:
+            await ctx.channel.send("Nie podano mi którą linię usunąć!")
+            return
+        path = "data/" + dire + "/" + arg1 + ".txt"
+        if not os.path.exists(path):
+            await ctx.channel.send("Nie ma takiej listy!")
+            return
+        message = fad.remove_from_list("data/" + dire + "/" + arg1, arg2)
+        await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Rozpoczyna zliczanie punktów dla danego użytkownika",
@@ -198,8 +216,11 @@ async def get_p(ctx, arg=None):
                          "\nargumenty: brak")
 async def track_goals(ctx):
     dire = fad.check_user_database(ctx.author.id)
-    message = calc.track_goals(dire)
-    await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        message = calc.track_goals(dire)
+        await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Dodaje cel",
@@ -207,8 +228,11 @@ async def track_goals(ctx):
                          "\nargumenty: nazwa celu, koniecznie w "" jeśli na być dłuższa niż 1 wyraz")
 async def add_goal(ctx, arg=None):
     dire = fad.check_user_database(ctx.author.id)
-    message = calc.add_goal(dire, arg)
-    await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        message = calc.add_goal(dire, arg)
+        await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Pokazuje cele użytkownika",
@@ -216,8 +240,11 @@ async def add_goal(ctx, arg=None):
                          "\nargumenty: brak")
 async def list_goals(ctx):
     dire = fad.check_user_database(ctx.author.id)
-    message = calc.list_goals(dire)
-    await ctx.channel.send(message)
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        message = calc.list_goals(dire)
+        await ctx.channel.send(message)
 
 
 @bot.command(pass_context=True, brief="Oznacza cel jako ukończony",
@@ -225,10 +252,13 @@ async def list_goals(ctx):
                          "\nargumenty: numer celu")
 async def finish_goal(ctx, arg=None):
     dire = fad.check_user_database(ctx.author.id)
-    message = calc.finish_goal(dire, arg)
-    if message[1] == 0:
-        calc.adding_points(ctx.author.name)
-    await ctx.channel.send(message[0])
+    if len(dire) > 5:
+        await ctx.channel.send(dire)
+    else:
+        message = calc.finish_goal(dire, arg)
+        if message[1] == 0:
+            calc.adding_points(ctx.author.name)
+        await ctx.channel.send(message[0])
 
 
 with open('token.secret') as f1:

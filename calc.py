@@ -15,6 +15,15 @@ def commandlist():
     wb_obj.save(path)
     return message
 
+def track_points():
+    path = "data/points.xlsx"
+    check = os.path.exists(path)
+    if check:
+        return
+    wb = openpyxl.Workbook()
+    wb.save(path)
+    return
+
 
 def new_user_points(p):
     path = "data/points.xlsx"
