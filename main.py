@@ -35,7 +35,7 @@ async def commands(ctx):
 async def make_base(ctx):
     message = fad.make_user_database(ctx.author.id)
     dire = fad.check_user_database(ctx.author.id)
-    fad.add_list(dire[0], "main")
+    fad.add_list(dire, "main")
     await ctx.channel.send(message)
 
 
